@@ -1,0 +1,322 @@
+/* =====================================================================
+   DraNotes — Sistema visual "KK" (Kitty x Kuromi, edición profesional)
+   Sustituye por completo al tema oscuro neón anterior. Paleta clara,
+   contraste AA verificado, cero glow/cyberpunk, personajes integrados
+   de forma sutil (header, empty states) en vez de saturar la pantalla.
+
+   Orden del archivo:
+     1. Fuentes
+     2. Tokens (variables CSS)
+     3. Reset y base
+     4. Scrollbars
+     5. Tarjetas y superficies
+     6. Controles (botones, inputs)
+     7. Filtros en desplegable (<details>/<summary>, sin JS)
+     8. Badges de estado (arte) y de pago (dinero)
+     9. Marco de portada e ilustraciones
+    10. Utilidades y estados
+   ===================================================================== */
+
+/* 1. FUENTES: se cargan con <link> en index.html (Inter, profesional) */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* 2. TOKENS ----------------------------------------------------------- */
+:root {
+  /* base */
+  --kk-purple:      #3D2449;   /* morado Kuromi profundo: texto, estructura, acción primaria */
+  --kk-purple-mid:  #6C4675;   /* morado medio: estados hover */
+  --kk-pink:        #FFB3C6;   /* rosa Hello Kitty: acentos y elementos secundarios */
+  --kk-pink-hover:  #FFA0B7;
+  --kk-bg:          #F8F6F9;   /* fondo general, limpio */
+  --kk-card:        #FFFFFF;   /* fondo de tarjetas */
+  --kk-header-tint: #F0E8F3;   /* fondo de encabezados de tabla / franjas suaves */
+  --kk-text:        #1F1823;   /* texto principal */
+  --kk-text-muted:  #5E5463;   /* texto secundario / etiquetas */
+  --kk-border:      #E5DBE8;   /* delimitadores */
+
+  /* estados semánticos: pares bg claro / texto oscuro, todos > 4.5:1 */
+  --kk-ok-bg: #D1FAE5;   --kk-ok-tx: #065F46;
+  --kk-warn-bg:#FEF3C7;  --kk-warn-tx:#92400E;
+  --kk-info-bg:#DBEAFE;  --kk-info-tx:#1E3A8A;
+  --kk-rose-bg:#FCE7F3;  --kk-rose-tx:#9D174D;
+  --kk-gray-bg:#E4E4E7;  --kk-gray-tx:#3F3F46;
+  --kk-red-bg: #FEE2E2;  --kk-red-tx: #991B1B;
+
+  --kk-radius:    12px;
+  --kk-radius-sm: 8px;
+  --kk-shadow:      0 4px 15px rgba(61, 36, 73, .05);
+  --kk-shadow-hover:0 6px 20px rgba(61, 36, 73, .08);
+}
+/* Aplicación general a las tarjetas del Dashboard */
+.card-custom {
+  background-color: var(--kk-card-bg);
+  border: 1px solid var(--kk-border-color);
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(61, 36, 73, 0.05);
+}
+.kk-count {
+  font-weight: 700;
+  color: var(--kk-primary);
+}
+
+/* 3. RESET Y BASE ----------------------------------------------------- */
+* { box-sizing: border-box; }
+html, body { height: 100%; margin: 0; }
+
+body {
+  background-color: var(--kk-bg);
+  /* Watermark muy sutil (5% de opacidad): un par de orejas redondeadas
+     en la esquina, nada que compita con el contenido. */
+  background-image:
+    radial-gradient(120px 90px at 100% 0%, rgba(61,36,73,.05), transparent 60%),
+    radial-gradient(90px 70px at 0% 100%, rgba(255,179,198,.10), transparent 60%);
+  background-attachment: fixed;
+  color: var(--kk-text);
+  font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  font-size: 15px;
+  line-height: 1.55; /* respiro entre líneas, ver punto 2 de la guía */
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4 { font-weight: 700; letter-spacing: -.01em; margin: 0; color: var(--kk-purple); }
+a { color: inherit; text-decoration: none; }
+
+/* Etiqueta corta tipo "eyebrow": reemplaza a la tipografía pixelada
+   anterior, mismo uso (datos cortos, contadores) con tono profesional. */
+.kk-eyebrow {
+  font-size: .68rem;
+  font-weight: 700;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  color: var(--kk-text-muted);
+}
+
+:focus-visible {
+  outline: 2px solid var(--kk-purple-mid);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+/* 4. SCROLLBARS --------------------------------------------------------*/
+* { scrollbar-width: thin; scrollbar-color: var(--kk-pink) transparent; }
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--kk-pink); border-radius: 99px; }
+::-webkit-scrollbar-thumb:hover { background: var(--kk-pink-hover); }
+
+/* 5. TARJETAS Y SUPERFICIES ------------------------------------------- */
+.kk-card {
+  background: var(--kk-card);
+  border: 1px solid var(--kk-border);
+  border-radius: var(--kk-radius);
+  box-shadow: var(--kk-shadow);
+  transition: border-color .2s ease, box-shadow .2s ease;
+}
+.kk-card:hover { border-color: var(--kk-pink); box-shadow: var(--kk-shadow-hover); }
+
+/* Franja de cabecera dentro de una tarjeta: reemplaza a la barra de
+   título con puntitos de colores (eso sí leía "cyberpunk"). */
+.kk-card-header {
+  display: flex; align-items: center; gap: .55rem;
+  padding: .8rem 1.1rem;
+  background: var(--kk-header-tint);
+  border-bottom: 1px solid var(--kk-border);
+  border-radius: var(--kk-radius) var(--kk-radius) 0 0;
+  color: var(--kk-purple);
+}
+
+/* 6. CONTROLES ---------------------------------------------------------*/
+.kk-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: .45rem;
+  padding: .6rem 1.1rem;
+  border-radius: var(--kk-radius-sm);
+  border: 1px solid transparent;
+  font-weight: 600; font-size: .9rem;
+  cursor: pointer;
+  transition: background .18s ease, box-shadow .18s ease, transform .12s ease;
+}
+.kk-btn:active { transform: translateY(1px); }
+.kk-btn:disabled { opacity: .55; cursor: not-allowed; box-shadow: none; }
+
+.kk-btn-primary { background: var(--kk-purple); color: #fff; }
+.kk-btn-primary:hover { background: var(--kk-purple-mid); box-shadow: 0 4px 12px rgba(61,36,73,.22); }
+
+/* Botón secundario "Kitty": rosa suave, texto morado (contraste alto) */
+.kk-btn-soft { background: var(--kk-pink); color: var(--kk-purple); border-color: rgba(61,36,73,.10); }
+.kk-btn-soft:hover { background: var(--kk-pink-hover); }
+
+.kk-btn-ghost { background: #fff; border-color: var(--kk-border); color: var(--kk-purple); }
+.kk-btn-ghost:hover { border-color: var(--kk-pink); background: #FFF9FB; }
+
+.kk-input {
+  width: 100%;
+  background: #fff;
+  border: 1px solid var(--kk-border);
+  border-radius: var(--kk-radius-sm);
+  color: var(--kk-text);
+  padding: .6rem .8rem;
+  font-family: inherit; font-size: .92rem;
+  transition: border-color .16s ease, box-shadow .16s ease;
+}
+.kk-input::placeholder { color: #A79CAE; }
+.kk-input:focus {
+  outline: none;
+  border-color: var(--kk-purple-mid);
+  box-shadow: 0 0 0 3px rgba(108,70,117,.14);
+}
+.kk-label { display: block; font-size: .78rem; font-weight: 600; color: var(--kk-text-muted); margin-bottom: .3rem; }
+
+.kk-input[type='file']::file-selector-button {
+  margin-right: .7rem; padding: .3rem .7rem;
+  border: 1px solid var(--kk-border); border-radius: 999px;
+  background: var(--kk-header-tint); color: var(--kk-purple);
+  font-family: inherit; font-size: .8rem; cursor: pointer;
+}
+
+/* 7. FILTROS EN DESPLEGABLE -------------------------------------------
+   Usa <details>/<summary> nativo: sin JavaScript, multi-selección
+   funciona sola porque marcar un checkbox no cierra el panel. Así se
+   evita "todo acumulado en pantalla": el filtro vive plegado hasta que
+   el usuario lo abre, igual que un dropdown de exploración de datos. */
+.kk-dropdown { position: relative; }
+.kk-dropdown > summary {
+  list-style: none; cursor: pointer;
+  display: inline-flex; align-items: center; gap: .5rem;
+  padding: .55rem .9rem;
+  border: 1px solid var(--kk-border); border-radius: var(--kk-radius-sm);
+  background: #fff; color: var(--kk-purple);
+  font-weight: 600; font-size: .88rem;
+  transition: border-color .16s ease;
+}
+.kk-dropdown > summary::-webkit-details-marker { display: none; }
+.kk-dropdown > summary:hover { border-color: var(--kk-pink); }
+.kk-dropdown[open] > summary { border-color: var(--kk-purple-mid); box-shadow: 0 0 0 3px rgba(108,70,117,.12); }
+.kk-dropdown .kk-chevron { transition: transform .18s ease; color: var(--kk-text-muted); }
+.kk-dropdown[open] .kk-chevron { transform: rotate(180deg); }
+
+.kk-dropdown-panel {
+  position: absolute; top: calc(100% + 8px); left: 0; z-index: 30;
+  min-width: 260px; max-height: 320px; overflow-y: auto;
+  background: #fff; border: 1px solid var(--kk-border); border-radius: var(--kk-radius);
+  box-shadow: 0 16px 32px -14px rgba(61,36,73,.22);
+  padding: .4rem;
+}
+.kk-dropdown-panel::before {
+  content: ''; position: absolute; top: -6px; left: 18px;
+  width: 11px; height: 11px; background: #fff;
+  border-left: 1px solid var(--kk-border); border-top: 1px solid var(--kk-border);
+  transform: rotate(45deg);
+}
+
+/* Fila con checkbox dentro del panel: label completo es clicable */
+.kk-check {
+  display: flex; align-items: center; gap: .55rem;
+  padding: .45rem .55rem; border-radius: var(--kk-radius-sm);
+  cursor: pointer; font-size: .86rem; color: var(--kk-text);
+}
+.kk-check:hover { background: var(--kk-header-tint); }
+.kk-check input[type='checkbox'] {
+  width: 16px; height: 16px; accent-color: var(--kk-purple); cursor: pointer;
+}
+.kk-check .kk-dot { width: 8px; height: 8px; border-radius: 99px; background: currentColor; flex: 0 0 auto; }
+.kk-check .kk-count { margin-left: auto; font-size: .72rem; color: var(--kk-text-muted); }
+
+/* Pastilla que muestra un filtro activo fuera del desplegable, con su
+   propia "×" para quitarlo sin reabrir el panel. */
+.kk-filter-tag {
+  display: inline-flex; align-items: center; gap: .35rem;
+  padding: .25rem .5rem .25rem .65rem;
+  border-radius: 999px; font-size: .78rem; font-weight: 600;
+  background: var(--kk-header-tint); color: var(--kk-purple);
+  border: 1px solid var(--kk-border);
+}
+.kk-filter-tag button { display: inline-flex; color: var(--kk-text-muted); cursor: pointer; }
+.kk-filter-tag button:hover { color: var(--kk-red-tx); }
+
+/* 8. BADGES ------------------------------------------------------------*/
+.kk-badge {
+  display: inline-flex; align-items: center; gap: .3rem;
+  padding: .22rem .6rem;
+  border-radius: 6px;
+  font-size: .72rem; font-weight: 700;
+  white-space: nowrap;
+}
+
+.kk-e-pendiente { background: var(--kk-header-tint); color: var(--kk-purple); }
+.kk-e-boceto    { background: var(--kk-warn-bg); color: var(--kk-warn-tx); }
+.kk-e-dibujado  { background: var(--kk-info-bg); color: var(--kk-info-tx); }
+.kk-e-pagado    { background: var(--kk-ok-bg);   color: var(--kk-ok-tx); }
+.kk-e-entregado { background: var(--kk-rose-bg); color: var(--kk-rose-tx); }
+.kk-e-cancelado { background: var(--kk-gray-bg); color: var(--kk-gray-tx); }
+
+.kk-pago-full    { background: var(--kk-ok-bg);   color: var(--kk-ok-tx); }
+.kk-pago-parcial { background: var(--kk-warn-bg); color: var(--kk-warn-tx); }
+.kk-pago-cero    { background: var(--kk-red-bg);  color: var(--kk-red-tx); }
+
+/* 9. MARCO DE PORTADA E ILUSTRACIONES ---------------------------------*/
+.kk-cover {
+  position: relative; overflow: hidden;
+  background: var(--kk-header-tint);
+  border-bottom: 1px solid var(--kk-border);
+}
+.kk-cover img {
+  width: 100%; height: 100%; object-fit: cover; display: block;
+  transition: transform .4s cubic-bezier(.2,.8,.2,1);
+}
+.kk-cover:hover img { transform: scale(1.05); }
+
+/* 10. UTILIDADES Y ESTADOS ---------------------------------------------*/
+.kk-avatar {
+  border-radius: 999px; border: 2px solid var(--kk-pink);
+  object-fit: cover; background: #fff;
+}
+
+/* Estilos para badges resaltantes en styles.css */
+.dn-estado-pendiente {
+  background-color: #f97316 !important; /* Naranja */
+  color: #ffffff !important;
+  font-weight: 700;
+}
+
+.dn-estado-boceto {
+  background-color: #64748b !important; /* Plomo */
+  color: #ffffff !important;
+  font-weight: 700;
+}
+
+.dn-estado-dibujado {
+  background-color: #38bdf8 !important; /* Celeste */
+  color: #ffffff !important;
+  font-weight: 700;
+}
+
+.dn-estado-entregado {
+  background-color: #10b981 !important; /* Verde */
+  color: #ffffff !important;
+  font-weight: 700;
+}
+
+.dn-estado-cancelado {
+  background-color: #ef4444 !important; /* Rojo */
+  color: #ffffff !important;
+  font-weight: 700;
+}
+
+
+
+
+
+/* Aviso suave para fechas vencidas: parpadeo de opacidad, no de neón. */
+@keyframes kk-fade-alert { 0%,100% { opacity: 1; } 50% { opacity: .55; } }
+.kk-alert-soft { animation: kk-fade-alert 1.8s ease-in-out infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .001ms !important;
+  }
+}

@@ -1,0 +1,111 @@
+<!-- app.component.html -->
+<main *ngIf="sinChrome()" class="min-h-screen flex items-center justify-center p-4">
+  <router-outlet></router-outlet>
+</main>
+
+<div *ngIf="!sinChrome()" class="min-h-screen lg:flex">
+
+  <!-- Barra superior móvil -->
+  <header class="lg:hidden sticky top-0 z-30 flex items-center gap-3 px-4 py-3 bg-white border-b" style="border-color:var(--kk-border)">
+    <button class="kk-btn kk-btn-ghost !p-2" (click)="abiertoMovil.set(!abiertoMovil())" aria-label="Abrir menú">
+      <dn-icon name="menu" [size]="20"></dn-icon>
+    </button>
+    <span class="font-extrabold tracking-tight" style="color:var(--kk-purple)">DraNotes</span>
+    <a routerLink="/comisiones/nueva" class="kk-btn kk-btn-primary !py-1.5 !px-3 ml-auto text-sm">
+      <dn-icon name="mas" [size]="16"></dn-icon> Nueva
+    </a>
+  </header>
+
+  <div *ngIf="abiertoMovil()" class="lg:hidden fixed inset-0 z-40 bg-black/40" (click)="abiertoMovil.set(false)"></div>
+
+  <!-- SIDEBAR -->
+  <aside class="fixed lg:sticky top-0 z-50 h-screen shrink-0 flex flex-col transition-all duration-300 lg:translate-x-0"
+         [style.width]="colapsado() ? '76px' : '240px'"
+         [class.-translate-x-full]="!abiertoMovil()"
+         [class.translate-x-0]="abiertoMovil()"
+         style="background:#fff;border-right:1px solid var(--kk-border)">
+
+    <!-- Header Sidebar -->
+    <div class="p-4 border-b flex items-center gap-2.5" style="border-color:var(--kk-border)">
+      <span class="shrink-0 grid place-items-center rounded-2xl"
+            style="width:38px;height:38px;background:var(--kk-purple);color:#FFB3C6">
+        <dn-icon name="calavera-mono" [size]="20" [grosor]="1.6"></dn-icon>
+      </span>
+
+      <h1 *ngIf="!colapsado()" class="text-[1.05rem] leading-none font-extrabold" style="color:var(--kk-purple)">
+        DraNotes
+      </h1>
+
+      <button class="ml-auto hidden lg:grid place-items-center rounded-lg p-1.5" style="color:var(--kk-text-muted)"
+              (click)="alternarColapso()"
+              [attr.aria-label]="colapsado() ? 'Expandir menú' : 'Colapsar menú'">
+        <dn-icon name="chevron" [size]="18"
+                 [ngStyle]="{transform: colapsado() ? 'rotate(-90deg)' : 'rotate(90deg)'}"></dn-icon>
+      </button>
+    </div>
+
+    <!-- Ficha del artista -->
+    <div *ngIf="!colapsado()" class="mx-4 mt-4 flex items-center gap-2.5 rounded-xl px-2.5 py-2"
+         style="background:var(--kk-header-tint);border:1px solid var(--kk-border)">
+      <span class="grid place-items-center rounded-full shrink-0 kk-avatar" style="width:32px;height:32px;color:var(--kk-purple)">
+        <dn-icon name="mono" [size]="17"></dn-icon>
+      </span>
+      <div class="min-w-0">
+        <p class="text-sm font-semibold truncate" style="color:var(--kk-purple)">{{ nombreArtista }}</p>
+        <p class="text-xs truncate" style="color:var(--kk-text-muted)">{{ handleArtista }}</p>
+      </div>
+    </div>
+
+    <!-- Navegación con Menú Desplegable por HOVER -->
+    <nav class="px-3 pt-5 flex-1 flex flex-col gap-1">
+      <a routerLink="/dashboard"
+         class="flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm font-semibold transition-colors"
+         [class.justify-center]="colapsado()"
+         [style.background]="rutaActual() === '/dashboard' ? 'var(--kk-header-tint)' : 'transparent'"
+         [style.color]="rutaActual() === '/dashboard' ? 'var(--kk-purple)' : 'var(--kk-text-muted)'">
+        <dn-icon name="disco" [size]="18"></dn-icon>
+        <span *ngIf="!colapsado()">Panel general</span>
+      </a>
+
+      <!-- Desplegable Comisiones (Hover) -->
+      <div class="relative group">
+        <div class="flex items-center justify-between gap-2.5 rounded-xl px-3 py-2.5 text-sm font-semibold cursor-pointer hover:bg-[var(--kk-header-tint)] transition-colors"
+             [class.justify-center]="colapsado()"
+             [style.color]="rutaActual().includes('comisiones') ? 'var(--kk-purple)' : 'var(--kk-text-muted)'">
+          <div class="flex items-center gap-2.5">
+            <dn-icon name="mas" [size]="18"></dn-icon>
+            <span *ngIf="!colapsado()">Comisiones</span>
+          </div>
+          <dn-icon *ngIf="!colapsado()" name="chevron" [size]="14" class="transition-transform group-hover:rotate-180"></dn-icon>
+        </div>
+
+        <!-- Submenú que se despliega al pasar el mouse por encima -->
+        <div class="hidden group-hover:flex flex-col gap-1 pl-6 pr-2 py-1 transition-all">
+          <a routerLink="/comisiones/nueva"
+             class="flex items-center gap-2 rounded-lg px-3 py-2 text-xs font-semibold hover:bg-[var(--kk-header-tint)] transition-colors"
+             [style.color]="rutaActual().includes('comisiones/nueva') ? 'var(--kk-purple)' : 'var(--kk-text-muted)'">
+            <span>+ Nueva comisión</span>
+          </a>
+          <a routerLink="/comisiones/entregadas"
+   class="flex items-center gap-2 rounded-lg px-3 py-2 text-xs font-semibold hover:bg-[var(--kk-header-tint)] transition-colors"
+   [style.color]="rutaActual().includes('comisiones/entregadas') ? 'var(--kk-purple)' : 'var(--kk-text-muted)'">
+  <span>✓ Entregadas</span>
+</a>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Pie -->
+    <div class="p-3 border-t" style="border-color:var(--kk-border)">
+      <button class="kk-btn kk-btn-ghost w-full" (click)="cerrarSesion()" [class.!px-0]="colapsado()">
+        <dn-icon name="salir" [size]="17"></dn-icon>
+        <span *ngIf="!colapsado()">Cerrar sesión</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- CONTENIDO PRINCIPAL -->
+  <main class="flex-1 min-w-0 px-4 py-6 lg:px-8 lg:py-8">
+    <router-outlet></router-outlet>
+  </main>
+</div>

@@ -1,0 +1,75 @@
+<!-- ENCABEZADO -->
+<div class="flex flex-wrap items-end justify-between gap-3 mb-6">
+  <div>
+    <h2 class="text-2xl lg:text-[1.75rem] font-bold" style="color:var(--kk-purple)">Comisiones entregadas</h2>
+    <p class="text-sm mt-0.5" style="color:var(--kk-text-muted)">
+      {{ entregadas.length }} de {{ store.comisiones().length }} encargos completados
+    </p>
+  </div>
+  <a routerLink="/comisiones/nueva" class="kk-btn kk-btn-primary">
+    <dn-icon name="mas" [size]="17"></dn-icon> Nueva comisión
+  </a>
+</div>
+
+<!-- ESTADOS DE CARGA Y ERROR -->
+<div *ngIf="store.cargando()" class="kk-card p-8 text-center">
+  <p class="text-sm font-medium" style="color:var(--kk-purple)">Cargando entregas…</p>
+</div>
+
+<div *ngIf="store.error()" class="kk-card p-4 mb-4" style="border-color:var(--kk-red-tx)">
+  <p class="text-sm" style="color:var(--kk-red-tx)">{{ store.error() }}</p>
+  <button class="kk-btn kk-btn-ghost mt-3" (click)="store.cargar()">Reintentar</button>
+</div>
+
+<!-- GRID DE TARJETAS DE ENTREGADAS -->
+<section *ngIf="!store.cargando()" class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
+
+  <article *ngFor="let c of entregadas; trackBy: trackId" class="kk-card overflow-hidden flex flex-col">
+    <a [routerLink]="['/comisiones', c.id_comision]" class="flex flex-col h-full">
+
+      <!-- Portada -->
+      <div class="kk-cover relative h-[170px]" data-marco>
+  <ng-container *ngIf="urlValida(c.imagen_de_comision); else sinPortada">
+    <!-- Componente de respaldo por debajo por si demora en cargar -->
+    <div class="absolute inset-0">
+      <dn-sin-portada texto="portada no disponible" [tam]="64"></dn-sin-portada>
+    </div>
+    
+    <!-- Imagen con la URL parseada y manejador de error -->
+    <img class="relative z-[1] w-full h-full object-cover" 
+         [src]="urlImagen(c.imagen_de_comision)" 
+         [alt]="'Portada de ' + c.titulo" 
+         loading="lazy" 
+         (error)="onImgError($event)">
+  </ng-container>
+
+  <ng-template #sinPortada>
+    <dn-sin-portada texto="sin portada registrada" [tam]="64"></dn-sin-portada>
+  </ng-template>
+</div>
+
+      <!-- Cuerpo -->
+      <div class="p-4 flex flex-col gap-2 flex-1">
+        <h3 class="text-[1.02rem] leading-snug" style="color:var(--kk-text)">{{ c.titulo }}</h3>
+
+        <p class="text-xs" style="color:var(--kk-text-muted)">
+          {{ c.nombre_ig }} <span *ngIf="c.cuenta_ig">· {{ c.cuenta_ig }}</span>
+        </p>
+
+        <div class="mt-auto pt-2 flex items-center justify-between">
+          <span class="text-sm font-bold" style="color:var(--kk-purple)">
+            S/ {{ c.precio_total | number:'1.2-2' }}
+          </span>
+        </div>
+      </div>
+    </a>
+  </article>
+
+  <!-- Estado Vacío -->
+  <div *ngIf="!entregadas.length" class="col-span-full kk-card p-10 text-center">
+    <div class="mx-auto mb-3" style="width:100px;height:100px">
+      <dn-sin-portada texto="sin entregas" [tam]="84"></dn-sin-portada>
+    </div>
+    <p class="text-sm" style="color:var(--kk-text-muted)">Aún no tienes comisiones en estado entregado.</p>
+  </div>
+</section>
