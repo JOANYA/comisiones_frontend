@@ -1,0 +1,4 @@
+# 1. Crear el archivo .gitignore para que Git ignore carpetas pesadas
+echo "node_modules/" > .gitignore
+echo ".angular/" >> .gitignore
+echo "dist/" >> .gitignore
