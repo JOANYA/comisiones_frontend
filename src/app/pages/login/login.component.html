@@ -1,45 +1,56 @@
-<div class="w-full max-w-md mx-auto px-2 sm:px-0">
-  <!-- Marca antes del formulario: es la única pantalla sin sidebar -->
-  <div class="flex items-center gap-3 mb-5">
-    <span class="grid place-items-center rounded-2xl shrink-0"
-          style="width:52px;height:52px;background:var(--kk-purple);color:#FFB3C6">
-      <dn-icon name="calavera-mono" [size]="28" [grosor]="1.6"></dn-icon>
-    </span>
-    <div class="min-w-0">
-      <h1 class="text-xl sm:text-2xl leading-none font-bold">DraNotes</h1>
-      <p class="text-xs mt-1" style="color:var(--kk-text-muted)">comisiones, pagos y plazos en un solo sitio</p>
+<!-- Contenedor principal a pantalla completa con la imagen de fondo cargada directamente -->
+<div class="min-h-screen w-full flex items-center justify-center p-4 bg-cover bg-center bg-no-repeat relative"
+     style="background-image: url('assets/img/login-bg.jpg');">
+
+  <!-- Overlay oscuro con desenfoque gótico para garantizar legibilidad y contraste -->
+  <div class="absolute inset-0 bg-black/65 backdrop-blur-sm z-0"></div>
+
+  <!-- Contenedor del Login flotante sobre la capa del fondo -->
+  <div class="w-full max-w-md mx-auto relative z-10 px-2 sm:px-0">
+    
+    <!-- Marca antes del formulario -->
+    <div class="flex items-center gap-3 mb-5">
+      <span class="grid place-items-center rounded-2xl shrink-0 shadow-lg"
+            style="width:52px;height:52px;background:var(--kk-purple);color:#FFB3C6">
+        <dn-icon name="calavera-mono" [size]="28" [grosor]="1.6"></dn-icon>
+      </span>
+      <div class="min-w-0">
+        <h1 class="text-xl sm:text-2xl leading-none font-bold text-white drop-shadow-md">DraNotes</h1>
+        <p class="text-xs mt-1 text-purple-200">comisiones, pagos y plazos en un solo sitio</p>
+      </div>
     </div>
+
+    <!-- Formulario de Inicio de Sesión -->
+    <form [formGroup]="form" (ngSubmit)="enviar()" class="kk-card overflow-hidden w-full backdrop-blur-md bg-white/95 shadow-2xl">
+      <div class="kk-card-header">
+        <dn-icon name="destello" [size]="14"></dn-icon>
+        <span class="kk-eyebrow" style="color:var(--kk-purple)">Iniciar sesión</span>
+      </div>
+
+      <div class="p-4 sm:p-6 flex flex-col gap-3.5">
+        <div>
+          <label class="kk-label" for="correo">Correo</label>
+          <input id="correo" type="email" class="kk-input w-full" formControlName="correo" autocomplete="email">
+        </div>
+
+        <div>
+          <label class="kk-label" for="password">Contraseña</label>
+          <input id="password" type="password" class="kk-input w-full" formControlName="password" autocomplete="current-password">
+        </div>
+
+        <div *ngIf="error" class="rounded-xl p-3" style="border:1px solid var(--kk-red-tx);background:var(--kk-red-bg)">
+          <p class="text-sm break-words" style="color:var(--kk-red-tx)">{{ error }}</p>
+        </div>
+
+        <button class="kk-btn kk-btn-primary w-full mt-1 justify-center" type="submit" [disabled]="cargando">
+          <dn-icon name="destello" [size]="16"></dn-icon>
+          {{ cargando ? 'Entrando…' : 'Entrar' }}
+        </button>
+
+        <p class="text-sm text-center mt-1" style="color:var(--kk-text-muted)">
+          ¿Primera vez? <a routerLink="/registro" class="underline font-semibold" style="color:var(--kk-purple)">Crea tu cuenta</a>
+        </p>
+      </div>
+    </form>
   </div>
-
-  <form [formGroup]="form" (ngSubmit)="enviar()" class="kk-card overflow-hidden w-full">
-    <div class="kk-card-header">
-      <dn-icon name="destello" [size]="14"></dn-icon>
-      <span class="kk-eyebrow" style="color:var(--kk-purple)">Iniciar sesión</span>
-    </div>
-
-    <div class="p-4 sm:p-6 flex flex-col gap-3.5">
-      <div>
-        <label class="kk-label" for="correo">Correo</label>
-        <input id="correo" type="email" class="kk-input w-full" formControlName="correo" autocomplete="email">
-      </div>
-
-      <div>
-        <label class="kk-label" for="password">Contraseña</label>
-        <input id="password" type="password" class="kk-input w-full" formControlName="password" autocomplete="current-password">
-      </div>
-
-      <div *ngIf="error" class="rounded-xl p-3" style="border:1px solid var(--kk-red-tx);background:var(--kk-red-bg)">
-        <p class="text-sm break-words" style="color:var(--kk-red-tx)">{{ error }}</p>
-      </div>
-
-      <button class="kk-btn kk-btn-primary w-full mt-1 justify-center" type="submit" [disabled]="cargando">
-        <dn-icon name="destello" [size]="16"></dn-icon>
-        {{ cargando ? 'Entrando…' : 'Entrar' }}
-      </button>
-
-      <p class="text-sm text-center mt-1" style="color:var(--kk-text-muted)">
-        ¿Primera vez? <a routerLink="/registro" class="underline font-semibold" style="color:var(--kk-purple)">Crea tu cuenta</a>
-      </p>
-    </div>
-  </form>
 </div>
