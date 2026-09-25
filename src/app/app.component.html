@@ -58,7 +58,7 @@
       </div>
     </div>
 
-    <!-- Navegación con Menú Desplegable -->
+    <!-- Navegación -->
     <nav class="px-3 pt-5 flex-1 flex flex-col gap-1 overflow-y-auto">
       <a routerLink="/dashboard"
          (click)="abiertoMovil.set(false)"
@@ -70,8 +70,12 @@
         <span *ngIf="!colapsado()">Panel general</span>
       </a>
 
-      <!-- Desplegable Comisiones -->
-      <details class="group/menu relative text-sm font-semibold select-none" [attr.open]="rutaActual().includes('comisiones') ? true : null">
+      <!-- Desplegable Comisiones: Abre por Click (nativo) y por Hover (mouseenter/mouseleave) -->
+      <details #menuComisiones
+               (mouseenter)="menuComisiones.open = true"
+               (mouseleave)="rutaActual().includes('comisiones') ? null : menuComisiones.open = false"
+               class="group/menu relative text-sm font-semibold select-none" 
+               [attr.open]="rutaActual().includes('comisiones') ? true : null">
         <summary class="flex items-center justify-between gap-2.5 rounded-xl px-3 py-2.5 cursor-pointer list-none hover:bg-[var(--kk-header-tint)] transition-colors [&::-webkit-details-marker]:hidden"
                  [class.justify-center]="colapsado()"
                  [style.color]="rutaActual().includes('comisiones') ? 'var(--kk-purple)' : 'var(--kk-text-muted)'">
@@ -79,11 +83,11 @@
             <dn-icon name="mas" [size]="18"></dn-icon>
             <span *ngIf="!colapsado()">Comisiones</span>
           </div>
-          <dn-icon *ngIf="!colapsado()" name="chevron" [size]="14" class="transition-transform group-open/menu:rotate-180 group-hover/menu:rotate-180"></dn-icon>
+          <dn-icon *ngIf="!colapsado()" name="chevron" [size]="14" class="transition-transform group-open/menu:rotate-180"></dn-icon>
         </summary>
 
         <!-- Submenú -->
-        <div class="flex flex-col gap-1 py-1 transition-all group-hover/menu:flex"
+        <div class="flex flex-col gap-1 py-1"
              [ngClass]="colapsado() ? 'px-1' : 'pl-6 pr-2'">
           <a routerLink="/comisiones/nueva"
              (click)="abiertoMovil.set(false)"
