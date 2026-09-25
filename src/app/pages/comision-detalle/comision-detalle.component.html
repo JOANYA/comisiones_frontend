@@ -1,77 +1,77 @@
-<a routerLink="/dashboard" class="kk-btn kk-btn-ghost mb-4">
+<a routerLink="/dashboard" class="kk-btn kk-btn-ghost mb-4 inline-flex">
   <dn-icon name="chevron" [size]="16" [ngStyle]="{transform:'rotate(90deg)'}"></dn-icon>
   Volver al panel
 </a>
 
 <div *ngIf="error" class="kk-card p-3 mb-4" style="border-color:var(--kk-red-tx)">
-  <p class="text-sm flex items-center gap-2" style="color:var(--kk-red-tx)">
-    <dn-icon name="equis" [size]="15"></dn-icon>{{ error }}
+  <p class="text-sm flex items-center gap-2 break-words" style="color:var(--kk-red-tx)">
+    <dn-icon name="equis" [size]="15" class="shrink-0"></dn-icon>{{ error }}
   </p>
 </div>
 
-<div *ngIf="comision" class="grid gap-5 lg:grid-cols-[minmax(0,1.55fr)_minmax(0,1fr)] items-start">
+<div *ngIf="comision" class="grid grid-cols-1 lg:grid-cols-[minmax(0,1.55fr)_minmax(0,1fr)] gap-5 items-start">
 
   <!-- ================= COLUMNA IZQUIERDA ============================== -->
-  <div class="flex flex-col gap-5">
+  <div class="flex flex-col gap-5 min-w-0">
 
     <!-- Ficha principal -->
-    <section class="kk-card overflow-hidden">
+    <section class="kk-card overflow-hidden w-full">
       <div class="kk-card-header">
         <dn-icon name="pincel" [size]="15"></dn-icon>
         <span class="kk-eyebrow" style="color:var(--kk-purple)">comisión #{{ comision.id_comision }}</span>
       </div>
 
-      <!-- Portada con validación estricta de URL -->
-      <div class="kk-cover" style="height:280px" data-marco>
+      <!-- Portada -->
+      <div class="kk-cover h-56 sm:h-72 w-full" data-marco>
         <ng-container *ngIf="urlValida(comision.imagen_de_comision); else sinPortadaDetalle">
           <img [src]="urlImagen(comision.imagen_de_comision)" [alt]="'Portada de ' + comision.titulo"
-               (error)="onImgError($event)">
+               class="w-full h-full object-cover" (error)="onImgError($event)">
         </ng-container>
         <ng-template #sinPortadaDetalle>
           <dn-sin-portada texto="sin portada registrada" sub="súbela al editar la comisión"></dn-sin-portada>
         </ng-template>
       </div>
 
-      <div class="p-5">
-        <div class="flex flex-wrap items-start justify-between gap-3">
+      <div class="p-4 sm:p-5">
+        <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
           <div class="min-w-0">
-            <h2 class="text-2xl">{{ comision.titulo }}</h2>
-            <p class="text-sm mt-0.5" style="color:var(--kk-text-muted)">
+            <h2 class="text-xl sm:text-2xl font-bold break-words">{{ comision.titulo }}</h2>
+            <p class="text-sm mt-0.5 truncate" style="color:var(--kk-text-muted)">
               {{ comision.nombre_ig }} <span>· {{ comision.cuenta_ig }}</span>
             </p>
           </div>
-          <span class="kk-badge" [ngClass]="estiloEstado(nombreEstado).clase">
+          <span class="kk-badge shrink-0 self-start" [ngClass]="estiloEstado(nombreEstado).clase">
             <dn-icon [name]="estiloEstado(nombreEstado).icono" [size]="12" [grosor]="2"></dn-icon>
             {{ nombreEstado }}
           </span>
         </div>
 
-        <p *ngIf="comision.descripcion" class="text-sm mt-3 max-w-[68ch]" style="color:var(--kk-text)">
+        <p *ngIf="comision.descripcion" class="text-sm mt-3 max-w-[68ch] whitespace-pre-line break-words" style="color:var(--kk-text)">
           {{ comision.descripcion }}
         </p>
 
-        <dl class="grid grid-cols-2 sm:grid-cols-3 gap-3 mt-5">
+        <dl class="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-5">
           <div class="rounded-xl p-3" style="background:var(--kk-header-tint);border:1px solid var(--kk-border)">
             <dt class="kk-eyebrow">Precio total</dt>
-            <dd class="text-lg font-bold mt-1" style="color:var(--kk-purple)">S/ {{ comision.precio_total | number:'1.2-2' }}</dd>
+            <dd class="text-lg font-bold mt-1 truncate" style="color:var(--kk-purple)">S/ {{ comision.precio_total | number:'1.2-2' }}</dd>
           </div>
           <div class="rounded-xl p-3" style="background:var(--kk-header-tint);border:1px solid var(--kk-border)">
             <dt class="kk-eyebrow">Fecha límite</dt>
-            <dd class="text-sm font-semibold mt-1">
+            <dd class="text-sm font-semibold mt-1 truncate">
               {{ comision.fecha_limite ? (comision.fecha_limite | date:'dd MMM yyyy') : 'sin fecha' }}
             </dd>
           </div>
           <div class="rounded-xl p-3" style="background:var(--kk-header-tint);border:1px solid var(--kk-border)">
             <dt class="kk-eyebrow">Registrada</dt>
-            <dd class="text-sm font-semibold mt-1">{{ comision.fecha_creacion | date:'dd MMM yyyy' }}</dd>
+            <dd class="text-sm font-semibold mt-1 truncate">{{ comision.fecha_creacion | date:'dd MMM yyyy' }}</dd>
           </div>
         </dl>
       </div>
     </section>
 
-    <!-- Cambio de estado: flujo lineal, no acumulado como chips sueltos -->
-    <section class="kk-card p-5">
-      <h3 class="text-base mb-1">Avance del dibujo</h3>
+    <!-- Cambio de estado -->
+    <section class="kk-card p-4 sm:p-5">
+      <h3 class="text-base font-bold mb-1">Avance del dibujo</h3>
       <p class="text-xs mb-4" style="color:var(--kk-text-muted)">
         Cambiarlo escribe en auditoria_comisiones y notifica automáticamente.
       </p>
@@ -90,21 +90,19 @@
     </section>
 
     <!-- Referencias -->
-    <section class="kk-card p-5">
-      <div class="flex items-center justify-between mb-3">
-        <h3 class="text-base">Referencias del cliente</h3>
-        <span class="kk-eyebrow">{{ referencias.length }} archivo(s)</span>
+    <section class="kk-card p-4 sm:p-5">
+      <div class="flex items-center justify-between gap-2 mb-3">
+        <h3 class="text-base font-bold">Referencias del cliente</h3>
+        <span class="kk-eyebrow shrink-0">{{ referencias.length }} archivo(s)</span>
       </div>
 
       <div *ngIf="referencias.length" class="grid grid-cols-2 sm:grid-cols-3 gap-2.5 mb-4">
         <figure *ngFor="let r of referencias; trackBy: trackRef"
-                class="kk-cover rounded-xl overflow-hidden" style="height:110px;border:1px solid var(--kk-border)"
+                class="kk-cover rounded-xl overflow-hidden h-24 sm:h-28 w-full" style="border:1px solid var(--kk-border)"
                 data-marco>
-          <!-- Aquí estaba el bug original: [src]="r.imagen_url" sin validar
-               pintaba src="null" y salía el ícono de imagen rota. -->
           <ng-container *ngIf="urlValida(r.imagen_url); else refRota">
             <img [src]="urlImagen(r.imagen_url)" [alt]="r.descripcion || 'Referencia'"
-                 [title]="r.descripcion || ''" loading="lazy" (error)="onImgError($event)">
+                 [title]="r.descripcion || ''" loading="lazy" class="w-full h-full object-cover" (error)="onImgError($event)">
           </ng-container>
           <ng-template #refRota>
             <dn-sin-portada texto="archivo no disponible" [tam]="48"></dn-sin-portada>
@@ -116,11 +114,11 @@
         No hay referencias adjuntas. Súbelas antes de empezar el boceto.
       </p>
 
-      <div class="grid gap-2 sm:grid-cols-[1fr_1fr_auto]">
-        <input type="file" class="kk-input" accept="image/*" (change)="onArchivoReferencia($event)">
-        <input type="text" class="kk-input" placeholder="Qué muestra esta imagen"
+      <div class="grid gap-2 grid-cols-1 sm:grid-cols-[1fr_1fr_auto]">
+        <input type="file" class="kk-input w-full" accept="image/*" (change)="onArchivoReferencia($event)">
+        <input type="text" class="kk-input w-full" placeholder="Qué muestra esta imagen"
                [(ngModel)]="descripcionReferencia">
-        <button class="kk-btn kk-btn-ghost" [disabled]="guardando" (click)="agregarReferencia()">
+        <button class="kk-btn kk-btn-ghost w-full sm:w-auto justify-center" [disabled]="guardando" (click)="agregarReferencia()">
           <dn-icon name="subir" [size]="16"></dn-icon> Subir
         </button>
       </div>
@@ -128,32 +126,32 @@
   </div>
 
   <!-- ================= COLUMNA DERECHA: DINERO ======================== -->
-  <aside class="kk-card overflow-hidden lg:sticky lg:top-6">
+  <aside class="kk-card overflow-hidden lg:sticky lg:top-6 w-full">
     <div class="kk-card-header">
       <dn-icon name="billetera" [size]="15"></dn-icon>
       <span class="kk-eyebrow" style="color:var(--kk-purple)">Caja</span>
     </div>
 
-    <div class="p-5">
-      <span class="kk-badge" [ngClass]="clasePago(estadoPago(saldo))">
+    <div class="p-4 sm:p-5">
+      <span class="kk-badge inline-flex" [ngClass]="clasePago(estadoPago(saldo))">
         <dn-icon [name]="estadoPago(saldo) === 'full' ? 'check' : 'moneda'" [size]="12" [grosor]="2"></dn-icon>
         {{ etiquetaPago(estadoPago(saldo), saldo) }}
       </span>
 
-      <div class="mt-4 h-2 rounded-full overflow-hidden" style="background:var(--kk-border)">
+      <div class="mt-4 h-2 rounded-full overflow-hidden w-full" style="background:var(--kk-border)">
         <div class="h-full rounded-full transition-[width] duration-500"
              [style.width.%]="progresoPago(saldo)"
              [style.background]="estadoPago(saldo) === 'full' ? 'var(--kk-ok-tx)' : 'var(--kk-pink)'"></div>
       </div>
 
       <div class="grid grid-cols-2 gap-3 mt-4">
-        <div>
+        <div class="min-w-0">
           <span class="kk-eyebrow">Pagado</span>
-          <p class="text-lg font-bold" style="color:var(--kk-ok-tx)">S/ {{ saldo?.total_pagado ?? 0 | number:'1.2-2' }}</p>
+          <p class="text-base sm:text-lg font-bold truncate" style="color:var(--kk-ok-tx)">S/ {{ saldo?.total_pagado ?? 0 | number:'1.2-2' }}</p>
         </div>
-        <div>
+        <div class="min-w-0">
           <span class="kk-eyebrow">Falta</span>
-          <p class="text-lg font-bold" style="color:var(--kk-red-tx)">S/ {{ saldo?.saldo_pendiente ?? 0 | number:'1.2-2' }}</p>
+          <p class="text-base sm:text-lg font-bold truncate" style="color:var(--kk-red-tx)">S/ {{ saldo?.saldo_pendiente ?? 0 | number:'1.2-2' }}</p>
         </div>
       </div>
 
@@ -163,11 +161,11 @@
         <li *ngFor="let p of pagos; trackBy: trackPago"
             class="flex items-center justify-between gap-2 rounded-lg px-3 py-2"
             style="background:var(--kk-header-tint);border:1px solid var(--kk-border)">
-          <span class="min-w-0">
+          <span class="min-w-0 flex-1">
             <span class="block text-sm truncate">{{ p.entidad_bancaria }}</span>
-            <span class="kk-eyebrow">{{ p.fecha_de_pago | date:'dd/MM/yy HH:mm' }}</span>
+            <span class="kk-eyebrow block truncate">{{ p.fecha_de_pago | date:'dd/MM/yy HH:mm' }}</span>
           </span>
-          <strong class="text-sm whitespace-nowrap" style="color:var(--kk-ok-tx)">
+          <strong class="text-sm whitespace-nowrap shrink-0" style="color:var(--kk-ok-tx)">
             S/ {{ p.monto | number:'1.2-2' }}
           </strong>
         </li>
@@ -179,12 +177,12 @@
       <!-- Alta de pago -->
       <div class="mt-5 pt-4 border-t flex flex-col gap-2" style="border-color:var(--kk-border)">
         <label class="kk-label" for="entidad">Registrar un pago</label>
-        <input id="entidad" type="text" class="kk-input" placeholder="Yape, Plin, BCP, Interbank…"
+        <input id="entidad" type="text" class="kk-input w-full" placeholder="Yape, Plin, BCP, Interbank…"
                [(ngModel)]="entidadBancaria">
-        <input type="number" class="kk-input" placeholder="Monto en soles" min="0" step="0.01"
+        <input type="number" class="kk-input w-full" placeholder="Monto en soles" min="0" step="0.01"
                [(ngModel)]="montoPago">
-        <input type="file" class="kk-input" accept="image/*" (change)="onArchivoComprobante($event)">
-        <button class="kk-btn kk-btn-primary w-full" [disabled]="guardando || estadoPago(saldo) === 'full'"
+        <input type="file" class="kk-input w-full" accept="image/*" (change)="onArchivoComprobante($event)">
+        <button class="kk-btn kk-btn-primary w-full justify-center" [disabled]="guardando || estadoPago(saldo) === 'full'"
                 (click)="registrarPago()">
           <dn-icon name="moneda" [size]="16"></dn-icon>
           {{ estadoPago(saldo) === 'full' ? 'Comisión saldada' : (guardando ? 'Guardando…' : 'Registrar pago') }}

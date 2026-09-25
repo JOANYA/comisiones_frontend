@@ -1,76 +1,75 @@
-<div class="max-w-3xl mx-auto">
-  <h2 class="text-2xl mb-1">Nueva comisión</h2>
-  <p class="text-sm mb-5" style="color:var(--kk-text-muted)">
+<div class="max-w-3xl mx-auto px-1 sm:px-0">
+  <h2 class="text-xl sm:text-2xl font-bold mb-1">Nueva comisión</h2>
+  <p class="text-sm mb-5 break-words" style="color:var(--kk-text-muted)">
     Los datos van directo a la tabla <code class="kk-eyebrow">comision</code>; el estado inicial es "Pendiente por dibujar".
   </p>
 
-  <form [formGroup]="form" (ngSubmit)="enviar()" class="kk-card overflow-hidden">
+  <form [formGroup]="form" (ngSubmit)="enviar()" class="kk-card overflow-hidden w-full">
     <div class="kk-card-header">
       <dn-icon name="lapiz" [size]="15"></dn-icon>
       <span class="kk-eyebrow" style="color:var(--kk-purple)">Formulario de comisión</span>
     </div>
 
-    <div class="p-5 grid gap-4 sm:grid-cols-2">
+    <div class="p-4 sm:p-5 grid gap-4 grid-cols-1 sm:grid-cols-2">
       <div>
         <label class="kk-label" for="nombre_ig">Nombre del cliente</label>
-        <input id="nombre_ig" type="text" class="kk-input" formControlName="nombre_ig" placeholder="Como te escribió">
+        <input id="nombre_ig" type="text" class="kk-input w-full" formControlName="nombre_ig" placeholder="Como te escribió">
         <p class="text-xs mt-1" style="color:var(--kk-red-tx)"
            *ngIf="form.controls.nombre_ig.touched && form.controls.nombre_ig.invalid">Escribe el nombre.</p>
       </div>
 
       <div>
         <label class="kk-label" for="cuenta_ig">Cuenta de Instagram</label>
-        <input id="cuenta_ig" type="text" class="kk-input" formControlName="cuenta_ig" placeholder="@usuario">
+        <input id="cuenta_ig" type="text" class="kk-input w-full" formControlName="cuenta_ig" placeholder="@usuario">
         <p class="text-xs mt-1" style="color:var(--kk-red-tx)"
            *ngIf="form.controls.cuenta_ig.touched && form.controls.cuenta_ig.invalid">Falta la cuenta.</p>
       </div>
 
       <div class="sm:col-span-2">
         <label class="kk-label" for="titulo">Título del dibujo</label>
-        <input id="titulo" type="text" class="kk-input" formControlName="titulo"
+        <input id="titulo" type="text" class="kk-input w-full" formControlName="titulo"
                placeholder="Halfbody con fondo, estilo chibi…">
       </div>
 
       <div class="sm:col-span-2">
         <label class="kk-label" for="descripcion">Qué pidió exactamente</label>
-        <textarea id="descripcion" rows="4" class="kk-input" formControlName="descripcion"
+        <textarea id="descripcion" rows="4" class="kk-input w-full" formControlName="descripcion"
                   placeholder="Pose, paleta, detalles que no se negocian, plazos hablados por DM…"></textarea>
       </div>
 
       <div>
         <label class="kk-label" for="precio">Precio acordado (S/)</label>
-        <input id="precio" type="number" min="0" step="0.01" class="kk-input" formControlName="precio_total">
+        <input id="precio" type="number" min="0" step="0.01" class="kk-input w-full" formControlName="precio_total">
       </div>
 
       <div>
         <label class="kk-label" for="fecha">Fecha límite</label>
-        <input id="fecha" type="date" class="kk-input" formControlName="fecha_limite">
+        <input id="fecha" type="date" class="kk-input w-full" formControlName="fecha_limite">
       </div>
 
-      <!-- Portada con vista previa local: así se ve antes de subir y no
-           se descubre que estaba rota recién en el dashboard. -->
+      <!-- Portada con vista previa local -->
       <div class="sm:col-span-2">
         <label class="kk-label" for="portada">Portada (opcional)</label>
-        <div class="grid gap-3 sm:grid-cols-[140px_1fr] items-center">
-          <div class="rounded-xl overflow-hidden kk-cover" style="height:110px;border:1px solid var(--kk-border)">
-            <img *ngIf="previewPortada; else sinPreview" [src]="previewPortada" alt="Vista previa de la portada">
+        <div class="grid gap-3 grid-cols-1 sm:grid-cols-[140px_1fr] items-center">
+          <div class="rounded-xl overflow-hidden kk-cover max-sm:mx-auto max-sm:w-full" style="height:110px;border:1px solid var(--kk-border)">
+            <img *ngIf="previewPortada; else sinPreview" [src]="previewPortada" alt="Vista previa de la portada" class="w-full h-full object-cover">
             <ng-template #sinPreview><dn-sin-portada texto="sin archivo" [tam]="46"></dn-sin-portada></ng-template>
           </div>
-          <input id="portada" type="file" class="kk-input" accept="image/*" (change)="onArchivo($event)">
+          <input id="portada" type="file" class="kk-input w-full" accept="image/*" (change)="onArchivo($event)">
         </div>
       </div>
 
       <div *ngIf="error" class="sm:col-span-2 rounded-xl p-3"
            style="border:1px solid var(--kk-red-tx);background:var(--kk-red-bg)">
-        <p class="text-sm" style="color:var(--kk-red-tx)">{{ error }}</p>
+        <p class="text-sm break-words" style="color:var(--kk-red-tx)">{{ error }}</p>
       </div>
 
-      <div class="sm:col-span-2 flex flex-wrap gap-2 pt-1">
-        <button class="kk-btn kk-btn-primary" type="submit" [disabled]="cargando">
+      <div class="sm:col-span-2 flex flex-col sm:flex-row gap-2 pt-1">
+        <button class="kk-btn kk-btn-primary w-full sm:w-auto justify-center" type="submit" [disabled]="cargando">
           <dn-icon name="check" [size]="16"></dn-icon>
           {{ cargando ? 'Guardando…' : 'Guardar comisión' }}
         </button>
-        <a class="kk-btn kk-btn-ghost" routerLink="/dashboard">Cancelar</a>
+        <a class="kk-btn kk-btn-ghost w-full sm:w-auto justify-center" routerLink="/dashboard">Cancelar</a>
       </div>
     </div>
   </form>

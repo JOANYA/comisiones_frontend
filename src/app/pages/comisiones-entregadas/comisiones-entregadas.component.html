@@ -1,12 +1,12 @@
 <!-- ENCABEZADO -->
-<div class="flex flex-wrap items-end justify-between gap-3 mb-6">
+<div class="flex flex-col sm:flex-row sm:items-end justify-between gap-3 mb-6">
   <div>
-    <h2 class="text-2xl lg:text-[1.75rem] font-bold" style="color:var(--kk-purple)">Comisiones entregadas</h2>
+    <h2 class="text-xl sm:text-2xl lg:text-[1.75rem] font-bold" style="color:var(--kk-purple)">Comisiones entregadas</h2>
     <p class="text-sm mt-0.5" style="color:var(--kk-text-muted)">
       {{ entregadas.length }} de {{ store.comisiones().length }} encargos completados
     </p>
   </div>
-  <a routerLink="/comisiones/nueva" class="kk-btn kk-btn-primary">
+  <a routerLink="/comisiones/nueva" class="kk-btn kk-btn-primary w-full sm:w-auto justify-center shrink-0">
     <dn-icon name="mas" [size]="17"></dn-icon> Nueva comisión
   </a>
 </div>
@@ -17,42 +17,39 @@
 </div>
 
 <div *ngIf="store.error()" class="kk-card p-4 mb-4" style="border-color:var(--kk-red-tx)">
-  <p class="text-sm" style="color:var(--kk-red-tx)">{{ store.error() }}</p>
+  <p class="text-sm break-words" style="color:var(--kk-red-tx)">{{ store.error() }}</p>
   <button class="kk-btn kk-btn-ghost mt-3" (click)="store.cargar()">Reintentar</button>
 </div>
 
 <!-- GRID DE TARJETAS DE ENTREGADAS -->
-<section *ngIf="!store.cargando()" class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
+<section *ngIf="!store.cargando()" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
 
-  <article *ngFor="let c of entregadas; trackBy: trackId" class="kk-card overflow-hidden flex flex-col">
+  <article *ngFor="let c of entregadas; trackBy: trackId" class="kk-card overflow-hidden flex flex-col h-full">
     <a [routerLink]="['/comisiones', c.id_comision]" class="flex flex-col h-full">
 
       <!-- Portada -->
-      <div class="kk-cover relative h-[170px]" data-marco>
-  <ng-container *ngIf="urlValida(c.imagen_de_comision); else sinPortada">
-    <!-- Componente de respaldo por debajo por si demora en cargar -->
-    <div class="absolute inset-0">
-      <dn-sin-portada texto="portada no disponible" [tam]="64"></dn-sin-portada>
-    </div>
-    
-    <!-- Imagen con la URL parseada y manejador de error -->
-    <img class="relative z-[1] w-full h-full object-cover" 
-         [src]="urlImagen(c.imagen_de_comision)" 
-         [alt]="'Portada de ' + c.titulo" 
-         loading="lazy" 
-         (error)="onImgError($event)">
-  </ng-container>
+      <div class="kk-cover relative h-40 sm:h-44 w-full" data-marco>
+        <ng-container *ngIf="urlValida(c.imagen_de_comision); else sinPortada">
+          <div class="absolute inset-0">
+            <dn-sin-portada texto="portada no disponible" [tam]="64"></dn-sin-portada>
+          </div>
+          <img class="relative z-[1] w-full h-full object-cover" 
+               [src]="urlImagen(c.imagen_de_comision)" 
+               [alt]="'Portada de ' + c.titulo" 
+               loading="lazy" 
+               (error)="onImgError($event)">
+        </ng-container>
 
-  <ng-template #sinPortada>
-    <dn-sin-portada texto="sin portada registrada" [tam]="64"></dn-sin-portada>
-  </ng-template>
-</div>
+        <ng-template #sinPortada>
+          <dn-sin-portada texto="sin portada registrada" [tam]="64"></dn-sin-portada>
+        </ng-template>
+      </div>
 
       <!-- Cuerpo -->
       <div class="p-4 flex flex-col gap-2 flex-1">
-        <h3 class="text-[1.02rem] leading-snug" style="color:var(--kk-text)">{{ c.titulo }}</h3>
+        <h3 class="text-[1.02rem] leading-snug font-bold line-clamp-2" style="color:var(--kk-text)">{{ c.titulo }}</h3>
 
-        <p class="text-xs" style="color:var(--kk-text-muted)">
+        <p class="text-xs truncate" style="color:var(--kk-text-muted)">
           {{ c.nombre_ig }} <span *ngIf="c.cuenta_ig">· {{ c.cuenta_ig }}</span>
         </p>
 
@@ -66,7 +63,7 @@
   </article>
 
   <!-- Estado Vacío -->
-  <div *ngIf="!entregadas.length" class="col-span-full kk-card p-10 text-center">
+  <div *ngIf="!entregadas.length" class="col-span-full kk-card p-6 sm:p-10 text-center">
     <div class="mx-auto mb-3" style="width:100px;height:100px">
       <dn-sin-portada texto="sin entregas" [tam]="84"></dn-sin-portada>
     </div>

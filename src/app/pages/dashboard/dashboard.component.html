@@ -1,63 +1,67 @@
 <!-- ===================== ENCABEZADO ==================================== -->
-<div class="flex flex-wrap items-end justify-between gap-3 mb-5">
+<div class="flex flex-col sm:flex-row sm:items-end justify-between gap-3 mb-5">
   <div>
-    <h2 class="text-2xl lg:text-[1.75rem]">Panel de comisiones</h2>
+    <h2 class="text-xl sm:text-2xl lg:text-[1.75rem] font-bold">Panel de comisiones</h2>
     <p class="text-sm mt-0.5" style="color:var(--kk-text-muted)">
       {{ store.filtradas().length }} de {{ store.comisiones().length }} encargos
     </p>
   </div>
-  <a routerLink="/comisiones/nueva" class="kk-btn kk-btn-primary">
+  <a routerLink="/comisiones/nueva" class="kk-btn kk-btn-primary w-full sm:w-auto justify-center shrink-0">
     <dn-icon name="mas" [size]="17"></dn-icon> Nueva comisión
   </a>
 </div>
 
 <!-- ===================== BARRA DE BÚSQUEDA Y FILTROS =================== -->
 <div class="kk-card p-3 mb-5">
-  <div class="flex flex-wrap items-center gap-2.5">
+  <div class="flex flex-col md:flex-row items-stretch md:items-center gap-2.5">
 
     <!-- Buscador -->
-    <div class="relative flex-1 min-w-[220px]">
+    <div class="relative flex-1 min-w-0">
       <span class="absolute left-3 top-1/2 -translate-y-1/2" style="color:var(--kk-text-muted)">
         <dn-icon name="lupa" [size]="16"></dn-icon>
       </span>
-      <input type="search" class="kk-input !pl-9" placeholder="Buscar por cliente, cuenta o título"
+      <input type="search" class="kk-input w-full !pl-9" placeholder="Buscar por cliente, cuenta o título"
              [ngModel]="store.busqueda()" (ngModelChange)="store.busqueda.set($event)">
     </div>
 
-    <!-- Desplegable de estado -->
-    <details class="kk-dropdown">
-      <summary>
-        <dn-icon name="disco" [size]="15"></dn-icon>
-        Estado
-        <span *ngIf="store.estadosActivos().size" class="kk-eyebrow" style="color:var(--kk-purple)">
-          ({{ store.estadosActivos().size }})
-        </span>
-        <dn-icon name="chevron" [size]="15" class="kk-chevron"></dn-icon>
-      </summary>
+    <!-- Desplegable de estado y botón limpiar -->
+    <div class="flex items-center gap-2 w-full md:w-auto">
+      <details class="kk-dropdown flex-1 md:flex-initial">
+        <summary class="w-full justify-between md:justify-start">
+          <span class="flex items-center gap-1.5">
+            <dn-icon name="disco" [size]="15"></dn-icon>
+            Estado
+            <span *ngIf="store.estadosActivos().size" class="kk-eyebrow" style="color:var(--kk-purple)">
+              ({{ store.estadosActivos().size }})
+            </span>
+          </span>
+          <dn-icon name="chevron" [size]="15" class="kk-chevron"></dn-icon>
+        </summary>
 
-      <div class="kk-dropdown-panel">
-        <label *ngFor="let e of estadosArte" class="kk-check" [ngClass]="estiloEstado(e).clase">
-          <input type="checkbox" [checked]="store.estadoActivo(e)" (change)="store.alternarEstado(e)">
-          <span class="kk-dot"></span>
-          <span style="color:var(--kk-text)">{{ e }}</span>
-          <span class="kk-count">{{ store.conteoPorEstado()[e] ?? 0 }}</span>
-        </label>
+        <div class="kk-dropdown-panel max-h-60 overflow-y-auto">
+          <label *ngFor="let e of estadosArte" class="kk-check" [ngClass]="estiloEstado(e).clase">
+            <input type="checkbox" [checked]="store.estadoActivo(e)" (change)="store.alternarEstado(e)">
+            <span class="kk-dot"></span>
+            <span style="color:var(--kk-text)">{{ e }}</span>
+            <span class="kk-count ml-auto">{{ store.conteoPorEstado()[e] ?? 0 }}</span>
+          </label>
 
-        <hr class="my-1" style="border-color:var(--kk-border)">
+          <hr class="my-1" style="border-color:var(--kk-border)">
 
-        <label class="kk-check dn-pago-cero">
-          <input type="checkbox" [checked]="store.estadoActivo(filtroDeuda)" (change)="store.alternarEstado(filtroDeuda)">
-          <span class="kk-dot"></span>
-          <span style="color:var(--kk-text)">{{ filtroDeuda }}</span>
-          <span class="kk-count">{{ store.conteoPorEstado()[filtroDeuda] ?? 0 }}</span>
-        </label>
-      </div>
-    </details>
+          <label class="kk-check dn-pago-cero">
+            <input type="checkbox" [checked]="store.estadoActivo(filtroDeuda)" (change)="store.alternarEstado(filtroDeuda)">
+            <span class="kk-dot"></span>
+            <span style="color:var(--kk-text)">{{ filtroDeuda }}</span>
+            <span class="kk-count ml-auto">{{ store.conteoPorEstado()[filtroDeuda] ?? 0 }}</span>
+          </label>
+        </div>
+      </details>
 
-    <button *ngIf="store.estadosActivos().size || store.busqueda()" class="kk-btn kk-btn-ghost !px-3"
-            (click)="store.limpiarFiltros()">
-      <dn-icon name="equis" [size]="14"></dn-icon> Limpiar
-    </button>
+      <button *ngIf="store.estadosActivos().size || store.busqueda()" class="kk-btn kk-btn-ghost !px-3 shrink-0"
+              (click)="store.limpiarFiltros()">
+        <dn-icon name="equis" [size]="14"></dn-icon> <span class="hidden sm:inline">Limpiar</span>
+      </button>
+    </div>
   </div>
 
   <!-- Pastillas removibles -->
@@ -72,10 +76,10 @@
 </div>
 
 <!-- ===================== BARRA DE METRICAS (KPI) ======================= -->
-<div class="grid gap-3 sm:grid-cols-2 xl:grid-cols-4 mb-6">
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
   <div class="kk-card p-4">
     <span class="kk-eyebrow">Recaudado</span>
-    <p class="text-2xl font-extrabold mt-1" style="color:var(--kk-ok-tx)">
+    <p class="text-xl sm:text-2xl font-extrabold mt-1 truncate" style="color:var(--kk-ok-tx)">
       S/ {{ store.totalRecaudado() | number:'1.2-2' }}
     </p>
     <p class="text-xs mt-0.5" style="color:var(--kk-text-muted)">suma de la tabla pagos</p>
@@ -83,7 +87,7 @@
 
   <div class="kk-card p-4">
     <span class="kk-eyebrow">Por cobrar</span>
-    <p class="text-2xl font-extrabold mt-1" style="color:var(--kk-red-tx)">
+    <p class="text-xl sm:text-2xl font-extrabold mt-1 truncate" style="color:var(--kk-red-tx)">
       S/ {{ store.totalPorCobrar() | number:'1.2-2' }}
     </p>
     <p class="text-xs mt-0.5" style="color:var(--kk-text-muted)">saldo_pendiente acumulado</p>
@@ -91,13 +95,13 @@
 
   <div class="kk-card p-4">
     <span class="kk-eyebrow">En cola</span>
-    <p class="text-2xl font-extrabold mt-1" style="color:var(--kk-purple)">{{ store.enCola() }}</p>
+    <p class="text-xl sm:text-2xl font-extrabold mt-1" style="color:var(--kk-purple)">{{ store.enCola() }}</p>
     <p class="text-xs mt-0.5" style="color:var(--kk-text-muted)">pendientes y bocetos</p>
   </div>
 
   <div class="kk-card p-4">
     <span class="kk-eyebrow">Por entregar</span>
-    <p class="text-2xl font-extrabold mt-1" style="color:var(--kk-rose-tx)">{{ store.porEntregar() }}</p>
+    <p class="text-xl sm:text-2xl font-extrabold mt-1" style="color:var(--kk-rose-tx)">{{ store.porEntregar() }}</p>
     <p class="text-xs mt-0.5" style="color:var(--kk-text-muted)">dibujadas o ya pagadas</p>
   </div>
 </div>
@@ -108,21 +112,21 @@
 </div>
 
 <div *ngIf="store.error()" class="kk-card p-4 mb-4" style="border-color:var(--kk-red-tx)">
-  <p class="text-sm" style="color:var(--kk-red-tx)">{{ store.error() }}</p>
+  <p class="text-sm break-words" style="color:var(--kk-red-tx)">{{ store.error() }}</p>
   <button class="kk-btn kk-btn-ghost mt-3" (click)="store.cargar()">Reintentar</button>
 </div>
 
 <!-- ===================== GRID DE TARJETAS ================================ -->
-<section *ngIf="!store.cargando()" class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
+<section *ngIf="!store.cargando()" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
 
-  <article *ngFor="let c of comisionesActivas; trackBy: trackId" class="kk-card overflow-hidden flex flex-col">
+  <article *ngFor="let c of comisionesActivas; trackBy: trackId" class="kk-card overflow-hidden flex flex-col h-full">
     <a [routerLink]="['/comisiones', c.id_comision]" class="flex flex-col h-full">
 
       <!-- Portada -->
-      <div class="kk-cover relative" style="height:170px" data-marco>
+      <div class="kk-cover relative h-40 sm:h-44 w-full" data-marco>
         <ng-container *ngIf="urlValida(c.imagen_de_comision); else sinPortada">
           <div class="absolute inset-0"><dn-sin-portada texto="portada no disponible" [tam]="64"></dn-sin-portada></div>
-          <img class="relative z-[1]" [src]="urlImagen(c.imagen_de_comision)"
+          <img class="relative z-[1] w-full h-full object-cover" [src]="urlImagen(c.imagen_de_comision)"
                [alt]="'Portada de ' + c.titulo" loading="lazy" (error)="onImgError($event)">
         </ng-container>
         <ng-template #sinPortada>
@@ -130,14 +134,14 @@
         </ng-template>
 
         <!-- Badge Estado -->
-        <span class="kk-badge absolute top-2.5 left-2.5 z-10" [ngClass]="estiloEstado(nombreEstado(c)).clase">
+        <span class="kk-badge absolute top-2.5 left-2.5 z-10 max-w-[70%] truncate" [ngClass]="estiloEstado(nombreEstado(c)).clase">
           <dn-icon [name]="estiloEstado(nombreEstado(c)).icono" [size]="12" [grosor]="2"></dn-icon>
-          {{ nombreEstado(c) || 'Sin estado' }}
+          <span class="truncate">{{ nombreEstado(c) || 'Sin estado' }}</span>
         </span>
 
         <!-- Fecha límite -->
         <span *ngIf="diasRestantes(c.fecha_limite) !== null && diasRestantes(c.fecha_limite)! <= 7"
-              class="kk-badge absolute top-2.5 right-2.5 z-10"
+              class="kk-badge absolute top-2.5 right-2.5 z-10 shrink-0"
               [ngClass]="diasRestantes(c.fecha_limite)! < 0 ? 'kk-pago-cero kk-alert-soft' : 'kk-e-boceto'">
           <dn-icon name="reloj" [size]="12" [grosor]="2"></dn-icon>
           {{ diasRestantes(c.fecha_limite)! < 0 ? 'vencida' : diasRestantes(c.fecha_limite) + ' d' }}
@@ -146,16 +150,16 @@
 
       <!-- Cuerpo de la tarjeta -->
       <div class="p-4 flex flex-col gap-2 flex-1">
-        <h3 class="text-[1.02rem] leading-snug" style="color:var(--kk-text)">{{ c.titulo }}</h3>
+        <h3 class="text-[1.02rem] leading-snug font-bold line-clamp-2" style="color:var(--kk-text)">{{ c.titulo }}</h3>
 
-        <p class="text-xs" style="color:var(--kk-text-muted)">
+        <p class="text-xs truncate" style="color:var(--kk-text-muted)">
           {{ c.nombre_ig }} <span>· {{ c.cuenta_ig }}</span>
         </p>
 
         <!-- Estado financiero -->
         <div class="mt-auto pt-2">
           <div class="flex items-center justify-between gap-2 mb-1.5">
-            <span class="kk-badge" [ngClass]="clasePago(estadoPago(c.saldo))">
+            <span class="kk-badge shrink-0" [ngClass]="clasePago(estadoPago(c.saldo))">
               <dn-icon [name]="estadoPago(c.saldo) === 'full' ? 'check' : 'billetera'" [size]="12" [grosor]="2"></dn-icon>
               {{ etiquetaPago(estadoPago(c.saldo), c.saldo) }}
             </span>
@@ -164,7 +168,7 @@
             </span>
           </div>
 
-          <div class="h-1.5 rounded-full overflow-hidden" style="background:var(--kk-border)">
+          <div class="h-1.5 rounded-full overflow-hidden w-full" style="background:var(--kk-border)">
             <div class="h-full rounded-full transition-[width] duration-500"
                  [style.width.%]="progresoPago(c.saldo)"
                  [style.background]="estadoPago(c.saldo) === 'full' ? 'var(--kk-ok-tx)' : 'var(--kk-pink)'"></div>
@@ -175,7 +179,7 @@
   </article>
 
   <!-- Estado Vacío -->
-  <div *ngIf="!store.filtradas().length" class="col-span-full kk-card p-10 text-center">
+  <div *ngIf="!store.filtradas().length" class="col-span-full kk-card p-6 sm:p-10 text-center">
     <div class="mx-auto mb-3" style="width:100px;height:100px">
       <dn-sin-portada texto="lienzo vacío" [tam]="84"></dn-sin-portada>
     </div>
@@ -187,7 +191,7 @@
 
     <ng-template #nadaAun>
       <p class="text-sm" style="color:var(--kk-text-muted)">Todavía no registras encargos.</p>
-      <a routerLink="/comisiones/nueva" class="kk-btn kk-btn-primary mt-3">
+      <a routerLink="/comisiones/nueva" class="kk-btn kk-btn-primary mt-3 inline-flex">
         <dn-icon name="mas" [size]="16"></dn-icon> Registrar la primera
       </a>
     </ng-template>
