@@ -14,7 +14,8 @@ const CLIENTE_KEY = 'comisiones_cliente';
  */
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  private apiUrl = `${environment.apiUrl}/api/clientes`;
+  // Construye la base /api/clientes limpiamente
+  private apiUrl = `${environment.apiUrl.replace(/\/$/, '')}/api/clientes`;
 
   private clienteActualSubject = new BehaviorSubject<Cliente | null>(this.leerClienteGuardado());
   clienteActual$ = this.clienteActualSubject.asObservable();
@@ -22,6 +23,7 @@ export class AuthService {
   constructor(private http: HttpClient) {}
 
   registro(datos: ClienteRegistro): Observable<{ mensaje: string; resultado: { id_cliente: number } }> {
+    // Esto llamará exactamente a: https://comsiones-backend.onrender.com/api/clientes/registro
     return this.http.post<{ mensaje: string; resultado: { id_cliente: number } }>(`${this.apiUrl}/registro`, datos);
   }
 
